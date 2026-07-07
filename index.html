@@ -15,7 +15,7 @@
 <!-- ===== Navbar ===== -->
 <nav class="navbar" id="navBar">
     <div class="container">
-        <div class="nav-logo" onclick="Router.navigate('dashboard')">
+        <div class="nav-logo" onclick="navigate('dashboard')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             Формула Тела
         </div>
@@ -50,7 +50,7 @@
             </div>
             <h1 class="welcome-title">Формула Тела</h1>
             <p class="welcome-subtitle">Персональный тренер и диетолог, который адаптируется под вас. Ваше здоровье, ваши цели, ваш темп.</p>
-            <button class="btn btn-primary btn-lg" onclick="Router.navigate('setup')" style="padding:16px 48px;font-size:1.15rem;">Начать</button>
+            <button class="btn btn-primary btn-lg" onclick="navigate('setup')" style="padding:16px 48px;font-size:1.15rem;">Начать</button>
             <p class="welcome-hint">Все данные хранятся локально. Никаких серверов.</p>
         </div>
     </div>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             <div class="dash-card fade-in">
-                <div class="card-link" onclick="Router.navigate('nutrition')">
+                <div class="card-link" onclick="navigate('nutrition')">
                     <h2><img src="static/images/icons/nutrition.svg" class="h-icon" alt=""> Питание сегодня</h2>
                     <div style="margin-bottom:12px;">
                         <div class="progress-bar-wrap"><div class="progress-fill protein" id="dashProteinBar" style="width:0%"></div></div>
@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="dash-card fade-in">
-                <div class="card-link" onclick="Router.navigate('fitness')">
+                <div class="card-link" onclick="navigate('fitness')">
                     <h2><img src="static/images/icons/fitness.svg" class="h-icon" alt=""> Тренировка</h2>
                     <p id="dashWorkoutText">Тренировка еще не запланирована</p>
                     <span class="card-action">Сгенерировать тренировку →</span>
@@ -144,13 +144,13 @@
                 <div class="week-grid" id="dashWeekGrid"></div>
             </div>
             <div class="dash-card fade-in">
-                <div class="card-link" onclick="Router.navigate('community')">
+                <div class="card-link" onclick="navigate('community')">
                     <h2><img src="static/images/icons/community.svg" class="h-icon" alt=""> Дневник</h2>
                     <p>Записывайте мысли и наблюдения</p>
                 </div>
             </div>
             <div class="dash-card fade-in">
-                <div class="card-link" onclick="Router.navigate('analytics')">
+                <div class="card-link" onclick="navigate('analytics')">
                     <h2><img src="static/images/icons/analytics.svg" class="h-icon" alt=""> Аналитика</h2>
                     <p>Трекинг привычек, дневник самочувствия и прогресс</p>
                 </div>
@@ -221,17 +221,17 @@
             <div class="nutri-card fade-in">
                 <h2><img src="static/images/icons/home.svg" class="h-icon" alt=""> Сценарий «Холодильник»</h2>
                 <p>Расскажите, что у вас есть дома</p>
-                <button class="btn btn-primary" onclick="Router.navigate('fridge')" style="margin-top:8px;">Что приготовить?</button>
+                <button class="btn btn-primary" onclick="navigate('fridge')" style="margin-top:8px;">Что приготовить?</button>
             </div>
             <div class="nutri-card fade-in">
                 <h2><img src="static/images/icons/shopping.svg" class="h-icon" alt=""> Умный список покупок</h2>
                 <p>Список продуктов на неделю</p>
-                <button class="btn btn-primary" onclick="Router.navigate('grocery')" style="margin-top:8px;">Смотреть список</button>
+                <button class="btn btn-primary" onclick="navigate('grocery')" style="margin-top:8px;">Смотреть список</button>
             </div>
             <div class="nutri-card fade-in">
                 <h2><img src="static/images/icons/star.svg" class="h-icon" alt=""> Читмил-баланс</h2>
                 <p>Любимое блюдо без чувства вины</p>
-                <button class="btn btn-primary" onclick="Router.navigate('cheat')" style="margin-top:8px;">Узнать</button>
+                <button class="btn btn-primary" onclick="navigate('cheat')" style="margin-top:8px;">Узнать</button>
             </div>
         </div>
     </div>
@@ -259,7 +259,7 @@
 <!-- ===== FRIDGE ===== -->
 <div class="page fridge-page" data-page="fridge">
     <div class="container">
-        <div class="back-link" onclick="Router.navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
+        <div class="back-link" onclick="navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
         <div class="page-header">
             <h1><img src="static/images/icons/home.svg" class="h-icon" alt=""> <span class="h1-gradient">Сценарий «Холодильник»</span></h1>
             <p class="page-subtitle">Введите продукты, которые есть дома, и мы предложим варианты блюд</p>
@@ -284,7 +284,7 @@
 <!-- ===== GROCERY ===== -->
 <div class="page grocery-page" data-page="grocery">
     <div class="container">
-        <div class="back-link" onclick="Router.navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
+        <div class="back-link" onclick="navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
         <div class="page-header">
             <h1><img src="static/images/icons/shopping.svg" class="h-icon" alt=""> <span class="h1-gradient">Умный список покупок</span></h1>
             <p class="page-subtitle">На основе ваших предпочтений и целей</p>
@@ -299,7 +299,7 @@
 <!-- ===== CHEAT MEAL ===== -->
 <div class="page cheat-page" data-page="cheat">
     <div class="container">
-        <div class="back-link" onclick="Router.navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
+        <div class="back-link" onclick="navigate('nutrition')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg> Назад к питанию</div>
         <div class="page-header">
             <h1><img src="static/images/icons/star.svg" class="h-icon" alt=""> <span class="h1-gradient">Читмил-баланс</span></h1>
             <p class="page-subtitle">Любимая «вредность» без чувства вины</p>
@@ -485,7 +485,7 @@
 <footer class="footer" id="footer">
     <div class="container">
         <div class="footer-links">
-            <a onclick="Router.navigate('legal')">Правовая информация</a>
+            <a onclick="navigate('legal')">Правовая информация</a>
         </div>
         <p>&copy; 2026 Формула Тела. Забота о себе — это формула счастья.</p>
     </div>
