@@ -1838,14 +1838,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('navToggle');
     if (navToggle) navToggle.onclick = function() { document.querySelector('.nav-links')?.classList.toggle('active'); };
 
-    // Nav link clicks
-    document.querySelectorAll('.nav-link, .nav-btn-link').forEach(el => {
-        el.onclick = function(e) {
-            e.preventDefault();
-            const page = this.dataset.page;
-            if (page) navigate(page);
-        };
-    });
+    // Nav clicks handled via onclick='navigate(...)' in HTML
 
     // Emoji rating
     document.querySelectorAll('.emoji-rating').forEach(container => {
