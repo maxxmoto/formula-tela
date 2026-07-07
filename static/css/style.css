@@ -124,6 +124,72 @@ p { color: var(--text-muted); line-height: 1.7; }
 .btn-link:hover { text-decoration: none; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
+/* ===== Welcome Page ===== */
+.welcome-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(143, 188, 143, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(226, 114, 90, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(212, 168, 67, 0.08) 0%, transparent 40%),
+        var(--warm-white);
+}
+.welcome-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.welcome-deco {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    animation: float 8s ease-in-out infinite;
+}
+.d1 { width: 300px; height: 300px; background: var(--sage); top: -80px; right: -80px; animation-delay: 0s; }
+.d2 { width: 200px; height: 200px; background: var(--terracotta); bottom: -60px; left: -60px; animation-delay: 2s; }
+.d3 { width: 150px; height: 150px; background: var(--gold); top: 50%; left: 10%; animation-delay: 4s; }
+.welcome-card {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 48px 40px;
+}
+.welcome-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 28px;
+    color: var(--terracotta);
+    animation: pulse 3s ease-in-out infinite;
+}
+.welcome-icon svg { width: 100%; height: 100%; }
+.welcome-title {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text-dark), var(--sage-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+}
+.welcome-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.welcome-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-top: 24px;
+}
+
 /* ===== Navbar ===== */
 .navbar {
     background: rgba(255, 250, 245, 0.75);

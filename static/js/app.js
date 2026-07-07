@@ -48,17 +48,21 @@ const Router = {
         if (el) {
             el.classList.add('active');
             this.current = page;
-            if (page !== 'setup') document.getElementById('navBar').style.display = 'flex';
-            else document.getElementById('navBar').style.display = 'none';
+            if (page === 'setup' || page === 'welcome') document.getElementById('navBar').style.display = 'none';
+            else document.getElementById('navBar').style.display = 'flex';
             if (window.renderPage) window.renderPage(page, data);
         }
         window.scrollTo(0, 0);
         document.querySelector('.nav-links')?.classList.remove('active');
     },
     init() {
-        const hash = location.hash.slice(1) || 'setup';
+        const hash = location.hash.slice(1) || 'welcome';
         const profile = Store.get('profile');
-        if (!profile && hash !== 'setup' && hash !== 'legal') { this.navigate('setup'); return; }
+        if (!profile) {
+            if (hash !== 'setup' && hash !== 'legal' && hash !== 'welcome') { this.navigate('welcome'); return; }
+        } else if (hash === 'welcome' || hash === 'setup') {
+            this.navigate('dashboard'); return;
+        }
         this.navigate(hash);
         window.addEventListener('popstate', () => {
             const h = location.hash.slice(1) || 'setup';
