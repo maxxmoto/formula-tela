@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формула Тела — персональный тренер и диетолог</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="static/favicon.svg">
+    <style>
+        :root {
+            --sage: #8fbc8f; --sage-dark: #5a8a5a;
+            --terracotta: #e2725a; --gold: #d4a843; --gold-light: #f0d48a;
+            --warm-white: #fffaf5; --warm-gray: #f5f0ea;
+            --text-dark: #2c2826; --text-muted: #7a726e;
+            --font-display: 'Nunito', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: radial-gradient(ellipse at 20% 0%, rgba(143,188,143,0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(226,114,90,0.08) 0%, transparent 50%),
+                        var(--warm-white);
+            color: var(--text-dark); line-height: 1.6; min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
+        a { color: var(--terracotta); text-decoration: none; }
+        a:hover { color: var(--sage-dark); }
+
+        .navbar {
+            padding: 20px 0;
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-display); font-weight: 800; font-size: 1.3rem;
+        }
+        .navbar svg { width: 28px; height: 28px; color: var(--terracotta); }
+
+        .hero { text-align: center; padding: 80px 0 60px; }
+        .hero h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--text-dark), var(--sage-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 16px;
+        }
+        .hero p { font-size: 1.15rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
+        .btn {
+            display: inline-block; padding: 14px 32px; border-radius: 50px;
+            font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+            cursor: pointer; border: none; transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8fbc8f, #5a8a5a); color: white;
+            box-shadow: 0 4px 15px rgba(143,188,143,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(143,188,143,0.4); }
+        .btn-outline {
+            background: transparent; color: #5a8a5a;
+            border: 2px solid #c1d5c1;
+        }
+        .btn-outline:hover { background: rgba(143,188,143,0.08); }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        .features { padding: 60px 0; }
+        .features h2 { text-align: center; font-size: 2rem; margin-bottom: 50px; }
+        .features h2:after {
+            content: ''; display: block; width: 60px; height: 3px;
+            background: linear-gradient(90deg, var(--terracotta), var(--gold));
+            margin: 16px auto 0; border-radius: 2px;
+        }
+        .grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+        }
+        .card {
+            padding: 32px 24px; border-radius: 20px; text-align: center;
+            background: rgba(255,250,245,0.5);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,250,245,0.4);
+            box-shadow: 0 8px 32px rgba(44,40,38,0.06);
+            transition: all 0.3s ease;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(44,40,38,0.1); }
+        .card svg { width: 36px; height: 36px; margin-bottom: 16px; color: var(--terracotta); }
+        .card h3 { margin-bottom: 8px; font-size: 1.1rem; }
+        .card p { font-size: 0.9rem; color: var(--text-muted); }
+
+        .stack { padding: 40px 0 80px; text-align: center; }
+        .stack h2 { font-size: 1.8rem; margin-bottom: 30px; }
+        .stack-tags { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .tag {
+            padding: 8px 20px; border-radius: 50px;
+            background: rgba(143,188,143,0.1);
+            border: 1px solid rgba(143,188,143,0.2);
+            font-size: 0.9rem; font-weight: 600; color: var(--sage-dark);
+        }
+
+        .footer {
+            text-align: center; padding: 30px 0;
+            border-top: 1px solid rgba(143,188,143,0.1);
+            color: var(--text-muted); font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+            .hero-btns { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            Формула Тела
+        </nav>
+
+        <section class="hero">
+            <h1>Ваша уникальная формула здоровья</h1>
+            <p>Персональный тренер и диетолог, который адаптируется под вас — ваше здоровье, вкусы и цели. Полностью офлайн, без интернета.</p>
+            <div class="hero-btns">
+                <a href="https://github.com/maxxmoto/formula-tela/releases" class="btn btn-primary">Скачать .exe</a>
+                <a href="https://github.com/maxxmoto/formula-tela" class="btn btn-outline">Исходный код</a>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Что внутри</h2>
+            <div class="grid">
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 0-4 2-4 5 0 2 1 4 4 8 3-4 4-6 4-8 0-3-2-5-4-5z"/><path d="M9 6c-1 1-2 3-2 5"/><path d="M15 6c1 1 2 3 2 5"/></svg>
+                    <h3>Умное питание</h3>
+                    <p>Научные формулы макронутриентов. Сценарий «Холодильник». Список покупок под ваш тип питания и непереносимости.</p>
+                </div>
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14"/><path d="M18 5v14"/><path d="M6 5c-1 0-2 1-2 2v10c0 1 1 2 2 2"/><path d="M18 5c1 0 2 1 2 2v10c0 1-1 2-2 2"/><path d="M6 12h12"/><path d="M6 9h12"/></svg>
+                    <h3>Фитнес-конструктор</h3>
+                    <p>Тренировки под ваши условия: без инвентаря, тихий режим, учёт противопоказаний. Таймер и прогресс.</p>
+                </div>
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    <h3>Аналитика и вес</h3>
+                    <p>Трекер веса раз в 7 дней. График динамики. Дневник самочувствия. Фото-сетка изменений.</p>
+                </div>
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <h3>Мотивация</h3>
+                    <p>Серии дней, сообщество по целям, читмил-баланс без чувства вины. SOS-страница для сложных дней.</p>
+                </div>
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    <h3>Конфиденциальность</h3>
+                    <p>Все данные хранятся локально. Никаких серверов и передачи данных. Полный контроль.</p>
+                </div>
+                <div class="card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10c0 5-3 8-10 12C5 20 2 17 2 12A10 10 0 0 1 12 2z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                    <h3>Нативное приложение</h3>
+                    <p>PyWebView + Flask. Работает как обычная программа. .exe 25 МБ. Никакого Node.js или браузера.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="stack">
+            <h2>Стек технологий</h2>
+            <div class="stack-tags">
+                <span class="tag">Python 3.13</span>
+                <span class="tag">Flask</span>
+                <span class="tag">SQLAlchemy</span>
+                <span class="tag">PyWebView</span>
+                <span class="tag">Chart.js</span>
+                <span class="tag">PyInstaller</span>
+                <span class="tag">SQLite</span>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2026 Формула Тела. Забота о себе — это формула счастья.</p>
+        </footer>
+    </div>
+</body>
+</html>
