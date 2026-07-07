@@ -46,6 +46,11 @@ body {
 
 .main-content { flex: 1; }
 
+.page { display: none; }
+.page.active { display: block; }
+.welcome-page.active { display: flex; }
+.setup-page.active { display: flex; }
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.3; }
@@ -127,7 +132,7 @@ p { color: var(--text-muted); line-height: 1.7; }
 /* ===== Welcome Page ===== */
 .welcome-page {
     min-height: 100vh;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     position: relative;
