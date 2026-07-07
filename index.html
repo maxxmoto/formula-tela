@@ -1498,29 +1498,29 @@ function renderSetup() {
     const p = Store.get('profile');
     const id = (id) => document.getElementById(id);
     if (p) {
-        if (id('setupName')) id('setupName').value = p.name || '';
-        if (id('setupGender')) id('setupGender').value = p.gender || 'female';
-        if (id('setupAge')) id('setupAge').value = p.age || 30;
-        if (id('setupHeight')) id('setupHeight').value = p.height || 170;
-        if (id('setupWeight')) id('setupWeight').value = p.current_weight || 70;
-        if (id('setupGoalWeight')) id('setupGoalWeight').value = p.goal_weight || 65;
-        if (id('setupGoal')) id('setupGoal').value = p.goal_type || 'lose';
-        if (id('setupActivity')) id('setupActivity').value = p.activity_level || 'light';
-        if (id('setupDiet')) id('setupDiet').value = p.diet_type || 'omnivore';
+        if (id('sName')) id('sName').value = p.name || '';
+        if (id('sGender')) id('sGender').value = p.gender || 'female';
+        if (id('sAge')) id('sAge').value = p.age || 30;
+        if (id('sHeight')) id('sHeight').value = p.height || 170;
+        if (id('sWeight')) id('sWeight').value = p.current_weight || 70;
+        if (id('sGoalWeight')) id('sGoalWeight').value = p.goal_weight || 65;
+        if (id('sGoal')) id('sGoal').value = p.goal_type || 'lose';
+        if (id('sActivity')) id('sActivity').value = p.activity_level || 'light';
+        if (id('sDiet')) id('sDiet').value = p.diet_type || 'omnivore';
     }
     const form = id('setupForm');
     if (form) form.onsubmit = function(e) {
         e.preventDefault();
         Store.set('profile', {
-            name: id('setupName')?.value || '',
-            gender: id('setupGender')?.value || 'female',
-            age: parseInt(id('setupAge')?.value) || 30,
-            height: parseFloat(id('setupHeight')?.value) || 170,
-            current_weight: parseFloat(id('setupWeight')?.value) || 70,
-            goal_weight: parseFloat(id('setupGoalWeight')?.value) || 65,
-            goal_type: id('setupGoal')?.value || 'lose',
-            activity_level: id('setupActivity')?.value || 'light',
-            diet_type: id('setupDiet')?.value || 'omnivore',
+            name: id('sName')?.value || '',
+            gender: id('sGender')?.value || 'female',
+            age: parseInt(id('sAge')?.value) || 30,
+            height: parseFloat(id('sHeight')?.value) || 170,
+            current_weight: parseFloat(id('sWeight')?.value) || 70,
+            goal_weight: parseFloat(id('sGoalWeight')?.value) || 65,
+            goal_type: id('sGoal')?.value || 'lose',
+            activity_level: id('sActivity')?.value || 'light',
+            diet_type: id('sDiet')?.value || 'omnivore',
         });
         navigate('dashboard');
     };
