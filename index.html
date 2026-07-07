@@ -487,6 +487,36 @@
 
 </main>
 
+<nav class="bottom-nav" id="bottomNav">
+    <button class="bn-btn" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Дашборд</span>
+    </button>
+    <button class="bn-btn" onclick="navigate('weight')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M8 5l4-3 4 3"/><path d="M4 17l3-3 3 3"/><path d="M14 14l3 3 3-3"/></svg>
+        <span>Вес</span>
+    </button>
+    <button class="bn-btn" onclick="navigate('nutrition')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 0-4 2-4 5 0 2 1 4 4 8 3-4 4-6 4-8 0-3-2-5-4-5z"/><path d="M9 6c-1 1-2 3-2 5"/><path d="M15 6c1 1 2 3 2 5"/></svg>
+        <span>Питание</span>
+    </button>
+    <button class="bn-btn" onclick="navigate('fitness')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14"/><path d="M18 5v14"/><path d="M6 5c-1 0-2 1-2 2v10c0 1 1 2 2 2"/><path d="M18 5c1 0 2 1 2 2v10c0 1-1 2-2 2"/><path d="M6 12h12"/><path d="M6 9h12"/></svg>
+        <span>Фитнес</span>
+    </button>
+    <button class="bn-btn" onclick="document.querySelector('.bn-more').classList.toggle('active')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        <span>Ещё</span>
+    </button>
+</nav>
+<div class="bn-more" id="bnMore" onclick="this.classList.remove('active')">
+    <button onclick="navigate('analytics'); document.getElementById('bnMore')?.classList.remove('active')">📊 Аналитика</button>
+    <button onclick="navigate('community'); document.getElementById('bnMore')?.classList.remove('active')">📖 Дневник</button>
+    <button onclick="navigate('setup'); document.getElementById('bnMore')?.classList.remove('active')">⚙️ Профиль</button>
+    <button onclick="navigate('legal'); document.getElementById('bnMore')?.classList.remove('active')">📄 Правовая</button>
+    <button onclick="document.getElementById('bnMore')?.classList.remove('active')">✕ Закрыть</button>
+</div>
+
 <footer class="footer" id="footer">
     <div class="container">
         <div class="footer-links">
@@ -497,11 +527,20 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="static/js/app.js?v=3"></script>
+<script src="static/js/app.v3.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('static/sw.js');
 }
+// PWA: hide footer in standalone mode, add bottom nav
+(function() {
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        document.getElementById('footer')?.remove();
+        document.getElementById('navBar')?.remove();
+        const bottomNav = document.getElementById('bottomNav');
+        if (bottomNav) bottomNav.style.display = 'flex';
+    }
+})();
 </script>
 </body>
 </html>

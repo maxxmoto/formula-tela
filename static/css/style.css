@@ -841,6 +841,88 @@ p { color: var(--text-muted); line-height: 1.7; }
 .back-link:hover { color: var(--sage-dark); }
 .back-link svg { width: 18px; height: 18px; }
 
+/* ===== Bottom Nav (PWA) ===== */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 250, 245, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(143, 188, 143, 0.12);
+    padding: 4px 0 env(safe-area-inset-bottom, 4px);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 150;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+}
+.bn-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: var(--transition);
+    min-width: 50px;
+}
+.bn-btn svg { width: 22px; height: 22px; transition: var(--transition); }
+.bn-btn:hover { color: var(--sage-dark); }
+.bn-btn:hover svg { color: var(--sage); }
+
+/* Bottom nav more menu */
+.bn-more {
+    display: none;
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 250, 245, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(143, 188, 143, 0.1);
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 151;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
+    border-radius: 20px 20px 0 0;
+    animation: fadeSlideIn 0.25s ease;
+}
+.bn-more.active { display: block; }
+.bn-more button {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(143, 188, 143, 0.06);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    color: var(--text-dark);
+    text-align: left;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+.bn-more button:last-child { border-bottom: none; }
+.bn-more button:hover { background: rgba(143, 188, 143, 0.08); }
+
+/* PWA: add padding to main content for bottom nav */
+@media (display-mode: standalone) {
+    .main-content { padding-bottom: 56px; }
+}
+/* iOS fallback */
+body:has(.bottom-nav[style*="flex"]) .main-content { padding-bottom: 56px; }
+
 /* ===== Responsive — Mobile First ===== */
 
 /* Large tablets and below */
