@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Вес — Формула Тела{% endblock %}
+{% block content %}
+<div class="weight-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/weight.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Трекер веса</span></h1>
+            <p class="page-subtitle">Записывайте вес раз в 7 дней и следите за динамикой</p>
+        </div>
+
+        <div class="weight-grid">
+            <div class="weight-card log-card">
+                <h2>Записать вес</h2>
+                {% if last_log %}
+                <div class="last-log-info">
+                    <span class="last-date">Последняя запись: {{ last_log.date.strftime('%d.%m.%Y') }}</span>
+                    <span class="last-value">{{ last_log.weight }} кг</span>
+                    {% if days_since < 7 %}
+                    <p class="days-hint" style="color:var(--text-muted);font-size:0.9rem;margin-top:8px;">
+                        &#9989; Записано {{ days_since }} дн. назад. Следующая через {{ 7 - days_since }} дн.
+                    </p>
+                    {% else %}
+                    <p class="days-hint" style="color:var(--terracotta);font-size:0.9rem;margin-top:8px;font-weight:600;">
+                        &#128200; Пора записать вес! Прошло {{ days_since }} дн.
+                    </p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="empty-state">Пока нет записей. Сделайте первую!</p>
+                {% endif %}
+                <form id="weightForm" class="weight-input-form">
+                    <div class="weight-input-row">
+                        <input type="number" name="weight" step="0.1" class="form-input" placeholder="Вес (кг)" required>
+                        <button type="submit" class="btn btn-primary">Записать</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="weight-card chart-card">
+                <h2>График веса</h2>
+                {% if logs|length > 1 %}
+                <div class="weight-chart-container">
+                    <canvas id="weightChart"></canvas>
+                </div>
+                {% else %}
+                <p class="empty-state">После 2+ записей появится график</p>
+                {% endif %}
+            </div>
+
+            <div class="weight-card history-card">
+                <h2>История записей</h2>
+                {% if logs %}
+                <div class="weight-history">
+                    {% for log in logs %}
+                    <div class="weight-entry">
+                        <span class="we-date">{{ log.date.strftime('%d.%m.%Y') }}</span>
+                        <span class="we-value">{{ log.weight }} кг</span>
+                        <span class="we-day">День {{ loop.index }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">История пуста</p>
+                {% endif %}
+            </div>
+
+            <div class="weight-card tips-card">
+                <h2><img src="{{ url_for('static', filename='images/icons/lightbulb.svg') }}" class="h-icon" alt=""> Заметки</h2>
+                <ul class="weight-tips">
+                    <li>Взвешивайтесь утром натощак после туалета</li>
+                    <li>Одежда должна быть минимальной или без неё</li>
+                    <li>Ставьте весы на твёрдую ровную поверхность</li>
+                    <li>Не взвешивайтесь каждый день — колебания воды &plusmn;1 кг нормальны</li>
+                    <li>Оптимальная частота — раз в 7 дней</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.getElementById('weightForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = '...';
+    const weight = this.querySelector('[name=weight]').value;
+    fetch('/daily-log', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({weight})
+    }).then(() => location.reload()).catch(() => {
+        alert('Ошибка');
+        btn.disabled = false;
+        btn.textContent = 'Записать';
+    });
+});
+
+{% if logs|length > 1 %}
+fetch('/api/weight-data')
+    .then(r => r.json())
+    .then(data => {
+        const labels = data.map(d => d.date.slice(5));
+        const vals = data.map(d => d.weight);
+        new Chart(document.getElementById('weightChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: vals,
+                    borderColor: '#8fbc8f',
+                    backgroundColor: 'rgba(143,188,143,0.1)',
+                    borderWidth: 3,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#8fbc8f',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: { font: { size: 12 }, callback: v => v + ' кг' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    });
+{% endif %}
+</script>
+{% endblock %}

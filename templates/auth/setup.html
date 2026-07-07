@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Мои данные — Формула Тела{% endblock %}
+{% block content %}
+<div class="setup-page">
+    <div class="container">
+        <div class="setup-card">
+            <h1>Мои параметры</h1>
+            <p class="setup-subtitle">Заполните один раз — система подстроит планы под вас</p>
+            <form method="POST" class="setup-form">
+                <div class="form-group">
+                    <label class="form-label">Как вас зовут?</label>
+                    <input type="text" name="name" class="form-input" placeholder="Анна" value="{{ current_user.username if current_user.username and current_user.username != 'me' else '' }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Пол</label>
+                        <select name="gender" class="form-input" required>
+                            <option value="female">Женский</option>
+                            <option value="male">Мужской</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Возраст</label>
+                        <input type="number" name="age" class="form-input" value="30" min="10" max="120" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Рост (см)</label>
+                        <input type="number" name="height" class="form-input" value="170" step="0.1" min="100" max="250" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Текущий вес (кг)</label>
+                        <input type="number" name="current_weight" class="form-input" value="70" step="0.1" min="30" max="300" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Целевой вес (кг)</label>
+                        <input type="number" name="goal_weight" class="form-input" value="65" step="0.1" min="30" max="300" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Цель</label>
+                        <select name="goal_type" class="form-input" required>
+                            <option value="lose">Похудение</option>
+                            <option value="maintain">Поддержание</option>
+                            <option value="gain">Набор массы</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Активность</label>
+                        <select name="activity_level" class="form-input" required>
+                            <option value="sedentary">Сидячий образ жизни</option>
+                            <option value="light" selected>Легкая активность</option>
+                            <option value="moderate">Умеренная активность</option>
+                            <option value="active">Высокая активность</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Тип питания</label>
+                        <select name="diet_type" class="form-input" required>
+                            <option value="omnivore">Всеядный</option>
+                            <option value="vegetarian">Вегетарианец</option>
+                            <option value="vegan">Веган</option>
+                            <option value="no_red_meat">Без красного мяса</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">Начать!</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

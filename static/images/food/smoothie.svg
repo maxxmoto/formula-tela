@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="sm1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0d48a"/><stop offset="100%" stop-color="#e2725a"/></linearGradient>
+  </defs>
+  <path d="M60 110 Q55 95 65 75 Q70 65 80 60 L120 60 Q130 65 135 75 Q145 95 140 110 Z" fill="url(#sm1)" opacity="0.7"/>
+  <path d="M60 110 Q55 95 65 75 Q70 65 80 60 L120 60 Q130 65 135 75 Q145 95 140 110 Z" fill="none" stroke="#d4a843" stroke-width="2"/>
+  <ellipse cx="100" cy="112" rx="40" ry="10" fill="#fffaf5" stroke="#e0d8d0" stroke-width="1.5"/>
+  <circle cx="85" cy="80" r="6" fill="#8fbc8f"/>
+  <circle cx="95" cy="75" r="5" fill="#e2725a" opacity="0.8"/>
+  <circle cx="110" cy="82" r="4" fill="#d4a843"/>
+  <circle cx="105" cy="90" r="5" fill="#9a9e5a" opacity="0.6"/>
+  <circle cx="88" cy="88" r="3" fill="#fff" opacity="0.5"/>
+  <circle cx="115" cy="78" r="2" fill="#fff" opacity="0.6"/>
+  <ellipse cx="100" cy="120" rx="10" ry="3" fill="#8fbc8f" opacity="0.5"/>
+  <rect x="95" y="55" width="10" height="8" rx="3" fill="#8fbc8f" opacity="0.6"/>
+  <path d="M75 115 Q85 108 95 115" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.5"/>
+</svg>

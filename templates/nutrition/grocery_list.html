@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Список покупок — Формула Тела{% endblock %}
+{% block content %}
+<div class="grocery-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/shopping.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Умный список покупок</span></h1>
+            <p class="page-subtitle">На основе ваших предпочтений и целей</p>
+        </div>
+
+        <div class="grocery-grid fade-in">
+            {% set categories = {} %}
+            {% for item in items %}
+                {% set cat = item.category %}
+                {% if cat not in categories %}
+                    {% set _ = categories.update({cat: [item]}) %}
+                {% else %}
+                    {% set _ = categories[cat].append(item) %}
+                {% endif %}
+            {% endfor %}
+
+            {% for cat, cat_items in items|groupby('category') %}
+            <div class="grocery-category">
+                <h3>{{ cat }}</h3>
+                <div class="grocery-items">
+                    {% for item in cat_items %}
+                    <label class="grocery-item">
+                        <input type="checkbox" class="grocery-check" {% if item.checked %}checked{% endif %}>
+                        <span class="grocery-name">{{ item.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="grocery-actions">
+            <button class="btn btn-primary" id="clearChecked">Очистить отмеченное</button>
+            <button class="btn btn-outline" onclick="window.open('{{ url_for('nutrition.grocery_pdf') }}', '_blank')">Скачать PDF</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.getElementById('clearChecked').addEventListener('click', function() {
+    document.querySelectorAll('.grocery-check:checked').forEach(cb => {
+        cb.closest('.grocery-item').remove();
+    });
+});
+</script>
+{% endblock %}

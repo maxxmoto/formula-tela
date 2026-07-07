@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Читмил-баланс — Формула Тела{% endblock %}
+{% block content %}
+<div class="cheat-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/star.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Читмил-баланс</span></h1>
+            <p class="page-subtitle">Любимая «вредность» без чувства вины</p>
+        </div>
+
+        <div class="cheat-content fade-in">
+            <div class="cheat-card main-card">
+                <h2>Как это работает</h2>
+                <p>Мы не запрещаем любимые блюда. Мы учим встраивать их в рацион так, чтобы это не мешало вашим целям.</p>
+                <div class="cheat-tip">
+                    <span class="tip-icon">&#9787;</span>
+                    <p>Хотите пиццу на ужин? В обед замените гарнир на двойную порцию салата, и ваш баланс дня сохранится.</p>
+                </div>
+                <div class="cheat-tip">
+                    <span class="tip-icon">&#9749;</span>
+                    <p>Мечтаете о десерте? Съешьте его после обеда, а не на голодный желудок — так уровень сахара будет стабильнее.</p>
+                </div>
+            </div>
+
+            <div class="cheat-card calculator-card">
+                <h2>Калькулятор читмила</h2>
+                <form id="cheatCalc">
+                    <div class="form-group">
+                        <label>Что хотите съесть?</label>
+                        <input type="text" class="form-input" id="cheatFood" placeholder="Пицца, бургер, торт...">
+                    </div>
+                    <div class="form-group">
+                        <label>Примерная калорийность</label>
+                        <input type="number" class="form-input" id="cheatCal" placeholder="500">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Рассчитать баланс</button>
+                </form>
+                <div id="cheatResult" class="cheat-result"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.getElementById('cheatCalc').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const food = document.getElementById('cheatFood').value;
+    const cal = parseInt(document.getElementById('cheatCal').value) || 500;
+    const compensate = Math.round(cal * 0.4);
+    const extra_veggies = Math.ceil(cal / 150);
+
+    document.getElementById('cheatResult').innerHTML = `
+        <div class="cheat-result-content">
+            <h3>Ваш план баланса для "${food}"</h3>
+            <p>Чтобы съесть это без последствий, сегодня нужно:</p>
+            <ul>
+                <li>&#129382; Сократить калорийность обеда на ${compensate} ккал</li>
+                <li>&#129361; Добавить ${extra_veggies} порции овощей к ужину</li>
+                <li>&#128166; Выпить на 1 стакан воды больше обычного</li>
+            </ul>
+            <p class="cheat-note">Наслаждайтесь без чувства вины! &#9787;</p>
+        </div>
+    `;
+});
+</script>
+{% endblock %}

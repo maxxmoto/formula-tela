@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Онбординг — Формула Тела{% endblock %}
+{% block content %}
+<div class="onboarding-page">
+    <div class="container">
+        <div class="onboarding-header">
+            <h1>Давайте познакомимся</h1>
+            <p class="onboarding-subtitle">Это займет всего 5 минут. Ответы помогут нам создать идеальный план именно для вас.</p>
+        </div>
+
+        <div class="onboarding-progress">
+            {% for q in questions %}
+                <div class="progress-step" data-step="{{ q.step }}">
+                    <span class="step-indicator">{{ q.step }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form id="onboardingForm" action="{{ url_for('onboarding.save') }}" method="POST" novalidate>
+            {% for question in questions %}
+            <div class="onboarding-step" data-step="{{ question.step }}" {% if not loop.first %}style="display:none"{% endif %}>
+                <div class="step-card">
+                    <h2>{{ question.title }}</h2>
+                    <p class="step-subtitle">{{ question.subtitle }}</p>
+
+                    {% for field in question.fields %}
+                    <div class="form-group">
+                        {% if field.type == 'radio' %}
+                            <label class="form-label">{{ field.label }}</label>
+                            <div class="radio-group">
+                                {% for option in field.options %}
+                                <label class="radio-card">
+                                    <input type="radio" name="{{ field.name }}" value="{{ option.value }}" required>
+                                    <span class="radio-label">{{ option.label }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        {% elif field.type == 'checkbox' %}
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="{{ field.name }}" value="1">
+                                <span class="checkbox-label">{{ field.label }}</span>
+                            </label>
+                        {% elif field.type == 'number' %}
+                            <label class="form-label">{{ field.label }}</label>
+                            <input type="number" name="{{ field.name }}" class="form-input" min="{{ field.min or 0 }}" max="{{ field.max or 999 }}" placeholder="0">
+                        {% elif field.type == 'text' %}
+                            <label class="form-label">{{ field.label }}</label>
+                            <input type="text" name="{{ field.name }}" class="form-input" placeholder="Введите ответ...">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="step-navigation">
+                    {% if not loop.first %}
+                    <button type="button" class="btn btn-outline prev-step">Назад</button>
+                    {% endif %}
+                    {% if loop.last %}
+                    <button type="submit" class="btn btn-primary">Завершить</button>
+                    {% else %}
+                    <button type="button" class="btn btn-primary next-step">Далее</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+{% endblock %}

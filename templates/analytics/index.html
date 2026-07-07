@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block title %}Аналитика — Формула Тела{% endblock %}
+{% block content %}
+<div class="analytics-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/analytics.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Аналитика и трекер</span></h1>
+            <p class="page-subtitle">Фокус на привычках, а не на весах</p>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="anal-card habit-tracker fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/habits.svg') }}" class="h-icon" alt=""> Трекинг привычек</h2>
+                <div class="habit-chart-container">
+                    <canvas id="habitsChart"></canvas>
+                </div>
+                <div class="habit-summary" id="habitSummary">
+                    <p>Загружаю данные...</p>
+                </div>
+            </div>
+
+            <div class="anal-card health-diary fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/diary.svg') }}" class="h-icon" alt=""> Дневник самочувствия</h2>
+                <form id="healthForm">
+                    <div class="form-group">
+                        <label>Энергия (1-5)</label>
+                        <div class="emoji-rating" data-field="energy">
+                            {% set emojis = ['😴','😒','😐','😊','😁'] %}
+                            {% for i in range(1,6) %}
+                            <span data-val="{{ i }}" {% if today_health and today_health.energy_level == i %}class="active"{% endif %}>{{ emojis[i-1] }}</span>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="energy" id="energyVal" value="{{ today_health.energy_level if today_health else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Настроение (1-5)</label>
+                        <div class="emoji-rating" data-field="mood">
+                            {% set emojis = ['😢','😞','😐','😊','😁'] %}
+                            {% for i in range(1,6) %}
+                            <span data-val="{{ i }}" {% if today_health and today_health.mood_level == i %}class="active"{% endif %}>{{ emojis[i-1] }}</span>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="mood" id="moodVal" value="{{ today_health.mood_level if today_health else '' }}">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Голод до еды</label>
+                            <select name="hunger_before" class="form-input">
+                                <option value="1" {% if today_health and today_health.hunger_before == 1 %}selected{% endif %}>Не хочу есть</option>
+                                <option value="2" {% if today_health and today_health.hunger_before == 2 %}selected{% endif %}>Слегка голоден</option>
+                                <option value="3" {% if today_health and today_health.hunger_before == 3 %}selected{% endif %}>Умеренно голоден</option>
+                                <option value="4" {% if today_health and today_health.hunger_before == 4 %}selected{% endif %}>Очень голоден</option>
+                                <option value="5" {% if today_health and today_health.hunger_before == 5 %}selected{% endif %}>Дико голоден</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Голод после еды</label>
+                            <select name="hunger_after" class="form-input">
+                                <option value="1" {% if today_health and today_health.hunger_after == 1 %}selected{% endif %}>Объелся</option>
+                                <option value="2" {% if today_health and today_health.hunger_after == 2 %}selected{% endif %}>Сытость</option>
+                                <option value="3" {% if today_health and today_health.hunger_after == 3 %}selected{% endif %}>Комфортно</option>
+                                <option value="4" {% if today_health and today_health.hunger_after == 4 %}selected{% endif %}>Слегка голоден</option>
+                                <option value="5" {% if today_health and today_health.hunger_after == 5 %}selected{% endif %}>Все еще голоден</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Заметки</label>
+                        <textarea name="notes" class="form-input" placeholder="Вздутие, тяжесть, энергия...">{{ today_health.notes if today_health else '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Сохранить запись</button>
+                </form>
+            </div>
+
+            <div class="anal-card photo-timeline fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/camera.svg') }}" class="h-icon" alt=""> Фото-сетка «Изменения»</h2>
+                {% if photos %}
+                    <div class="photo-grid">
+                        {% for photo in photos %}
+                        <div class="photo-item">
+                            <img src="{{ url_for('static', filename=photo.photo_path) }}" alt="Прогресс {{ photo.date.strftime('%d.%m.%Y') }}">
+                            <span class="photo-date">{{ photo.date.strftime('%d.%m.%Y') }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn-outline btn-sm" id="makeTimelapse">Создать таймлапс</button>
+                {% else %}
+                    <p class="empty-state">Фото пока нет. Сделайте первое фото и отслеживайте изменения!</p>
+                {% endif %}
+                <form id="photoUploadForm" enctype="multipart/form-data" class="photo-upload-form" style="margin-top:16px;">
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label class="file-input-label">
+                            Загрузить новое фото
+                            <input type="file" name="photo" accept="image/*" capture="environment">
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                </form>
+            </div>
+
+            <div class="anal-card insights fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/lightbulb.svg') }}" class="h-icon" alt=""> Инсайты</h2>
+                <div id="insightsContainer">
+                    <p>Анализирую данные...</p>
+                </div>
+            </div>
+
+            <div class="anal-card weight-log fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/weight.svg') }}" class="h-icon" alt=""> Вес (раз в 2 недели)</h2>
+                {% if weight_logs %}
+                    <div class="weight-chart-mini">
+                        <canvas id="weightChart"></canvas>
+                    </div>
+                {% else %}
+                    <p class="empty-state">Данных о весе пока нет</p>
+                {% endif %}
+                <form id="weightForm" class="weight-input" style="margin-top:12px;">
+                    <input type="number" name="weight" step="0.1" class="form-input" placeholder="Текущий вес (кг)" required>
+                    <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Emoji rating
+document.querySelectorAll('.emoji-rating').forEach(container => {
+    container.querySelectorAll('span').forEach(span => {
+        span.addEventListener('click', function() {
+            container.querySelectorAll('span').forEach(s => s.style.opacity = '0.4');
+            this.style.opacity = '1';
+            this.classList.add('active');
+            document.getElementById(this.parentElement.dataset.field + 'Val').value = this.dataset.val;
+        });
+    });
+});
+
+// Health diary form
+document.getElementById('healthForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        energy: parseInt(document.getElementById('energyVal').value) || 3,
+        mood: parseInt(document.getElementById('moodVal').value) || 3,
+        hunger_before: parseInt(form.hunger_before.value) || 3,
+        hunger_after: parseInt(form.hunger_after.value) || 3,
+        symptoms: '',
+        notes: form.notes.value || ''
+    };
+    fetch('/analytics/log-health', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(d => {
+        if (d.success) {
+            alert('Запись сохранена!');
+            location.reload();
+        }
+    }).catch(() => alert('Ошибка при сохранении'));
+});
+
+// Habits chart
+fetch('/analytics/api/habits?days=7')
+    .then(r => r.json())
+    .then(data => {
+        const summary = document.getElementById('habitSummary');
+        const waterDays = data.water ? data.water.length : 0;
+        const activityDays = data.activity ? data.activity.length : 0;
+        summary.innerHTML = `
+            <div class="habit-stat"><span>&#9749;</span> Пили воду: ${waterDays}/7 дней</div>
+            <div class="habit-stat"><span>&#9917;</span> Были активны: ${activityDays}/7 дней</div>
+        `;
+    });
+
+// Insights
+fetch('/analytics/api/health-insights')
+    .then(r => r.json())
+    .then(data => {
+        const container = document.getElementById('insightsContainer');
+        if(data.insights && data.insights.length) {
+            container.innerHTML = data.insights.map(i => `<div class="insight-item">&#128161; ${i}</div>`).join('');
+        } else {
+            container.innerHTML = '<p>Продолжайте в том же духе! Собираем данные для анализа...</p>';
+        }
+    });
+
+// Photo upload
+document.getElementById('photoUploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Загружаю...';
+    const formData = new FormData(this);
+    fetch('/analytics/photo-upload', {
+        method: 'POST',
+        body: formData
+    }).then(r => r.json()).then(() => location.reload()).catch(() => {
+        alert('Ошибка загрузки фото');
+        btn.disabled = false;
+        btn.textContent = 'Загрузить';
+    });
+});
+
+// Weight form
+document.getElementById('weightForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Сохраняю...';
+    const weight = this.querySelector('[name=weight]').value;
+    fetch('/daily-log', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({weight})
+    }).then(() => {
+        alert('Вес сохранен!');
+        location.reload();
+    }).catch(() => {
+        alert('Ошибка');
+        btn.disabled = false;
+        btn.textContent = 'Сохранить';
+    });
+});
+
+// Weight chart
+{% if weight_logs %}
+(function() {
+    const dates = [{% for w in weight_logs %}'{{ w.date.strftime("%d.%m") }}'{% if not loop.last %},{% endif %}{% endfor %}];
+    const vals = [{% for w in weight_logs %}{{ w.weight }}{% if not loop.last %},{% endif %}{% endfor %}];
+    new Chart(document.getElementById('weightChart'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                data: vals,
+                borderColor: '#8fbc8f',
+                backgroundColor: 'rgba(143,188,143,0.1)',
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: '#8fbc8f',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            }
+        }
+    });
+})();
+{% endif %}
+
+// Timelapse
+document.getElementById('makeTimelapse')?.addEventListener('click', function() {
+    const images = document.querySelectorAll('.photo-item img');
+    if (images.length < 2) {
+        alert('Для таймлапса нужно минимум 2 фото.');
+        return;
+    }
+    const existing = document.getElementById('timelapseCanvas');
+    if (existing) existing.remove();
+    const existingBtn = document.getElementById('stopTimelapse');
+    if (existingBtn) existingBtn.remove();
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'timelapseCanvas';
+    canvas.width = 400;
+    canvas.height = 400;
+    canvas.style.cssText = 'display:block;margin:16px auto;max-width:100%;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.1);';
+    const container = document.querySelector('.photo-timeline');
+    container.appendChild(canvas);
+    this.style.display = 'none';
+
+    const stopBtn = document.createElement('button');
+    stopBtn.id = 'stopTimelapse';
+    stopBtn.className = 'btn btn-outline btn-sm';
+    stopBtn.textContent = 'Стоп';
+    stopBtn.style.cssText = 'display:block;margin:8px auto;';
+    container.appendChild(stopBtn);
+
+    const ctx = canvas.getContext('2d');
+    let idx = 0;
+    let running = true;
+
+    stopBtn.addEventListener('click', function() {
+        running = false;
+        this.remove();
+        document.getElementById('makeTimelapse').style.display = 'inline-block';
+    });
+
+    function drawNext() {
+        if (!running) return;
+        const img = new Image();
+        img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            idx++;
+            if (idx < images.length) {
+                setTimeout(drawNext, 1200);
+            } else {
+                document.getElementById('makeTimelapse').style.display = 'inline-block';
+                document.getElementById('stopTimelapse')?.remove();
+            }
+        };
+        img.src = images[idx].src;
+    }
+    drawNext();
+});
+</script>
+{% endblock %}

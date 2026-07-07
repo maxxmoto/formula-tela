@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Сообщество — Формула Тела{% endblock %}
+{% block content %}
+<div class="community-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/community.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Сообщество</span></h1>
+            <p class="page-subtitle">Люди на вашем этапе — ваша поддержка</p>
+        </div>
+
+        <div class="community-layout">
+            <div class="chat-card fade-in">
+                <div class="chat-header">
+                    <h2>Комната: {{ room }}</h2>
+                    <span class="chat-status">Онлайн</span>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    {% for msg in messages %}
+                    <div class="chat-message {% if msg.user_id == current_user.id %}own{% endif %}">
+                        <span class="msg-author">{{ msg.user.username }}</span>
+                        <p class="msg-text">{{ msg.message }}</p>
+                        <span class="msg-time">{{ msg.created_at.strftime('%H:%M') }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="form-input" placeholder="Напишите сообщение...">
+                    <button class="btn btn-primary" id="sendMessageBtn">Отправить</button>
+                </div>
+            </div>
+
+            <div class="community-sidebar fade-in">
+                <div class="sidebar-card sos-card">
+                    <h2><img src="{{ url_for('static', filename='images/icons/sos.svg') }}" class="h-icon" alt=""> Кнопка SOS</h2>
+                    <p>Если вы на грани срыва — нажмите, мы поможем</p>
+                    <a href="{{ url_for('community.sos') }}" class="btn btn-danger btn-full">Мне нужна помощь</a>
+                </div>
+                <div class="sidebar-card info-card">
+                    <h2>Ваша комната</h2>
+                    <p>Вы в комнате пользователей с похожей целью и весом. Здесь можно делиться успехами, рецептами и поддержкой.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function loadMessages() {
+    fetch('/community/api/messages')
+        .then(r => r.json())
+        .then(messages => {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = messages.reverse().map(m => `
+                <div class="chat-message">
+                    <span class="msg-author">${m.username}</span>
+                    <p class="msg-text">${m.message}</p>
+                    <span class="msg-time">${m.time}</span>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        });
+}
+
+document.getElementById('sendMessageBtn').addEventListener('click', function() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if(!msg) return;
+    fetch('/community/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: msg, is_sos: false})
+    }).then(r => r.json()).then(() => {
+        input.value = '';
+        loadMessages();
+    });
+});
+
+document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') document.getElementById('sendMessageBtn').click();
+});
+
+loadMessages();
+setInterval(loadMessages, 10000);
+</script>
+{% endblock %}

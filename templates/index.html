@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Формула Тела — ваш цифровой тренер и диетолог{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Ваша уникальная формула здоровья</h1>
+            <p class="hero-subtitle">Персональный цифровой тренер и диетолог, который адаптируется под вас, ваше здоровье, вкусы и цели</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('auth.setup') }}" class="btn btn-primary btn-lg">Мои параметры</a>
+                <a href="#features" class="btn btn-outline btn-lg">Узнать больше</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-illustration">
+                <div class="floating-circle c1"></div>
+                <div class="floating-circle c2"></div>
+                <div class="floating-circle c3"></div>
+                <div class="hero-symbol">&#9825;</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title">Как это работает</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9783;</div>
+                <h3>Глубокая диагностика</h3>
+                <p>20 умных вопросов о вашем здоровье, образе жизни и предпочтениях. Мы узнаем вас настоящего.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9733;</div>
+                <h3>Персональный план</h3>
+                <p>Индивидуальные рекомендации по питанию и тренировкам, созданные специально для ваших целей.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9822;</div>
+                <h3>Гибкий конструктор питания</h3>
+                <p>Никаких жестких меню. Собирайте рацион из того, что есть в холодильнике.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9789;</div>
+                <h3>Домашний фитнес</h3>
+                <p>Тренировки на 7, 15 или 30 минут с учетом вашего инвентаря и самочувствия.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9776;</div>
+                <h3>Без насилия</h3>
+                <p>Трекинг привычек, а не веса. Фокус на энергии и самочувствии, а не на цифрах.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9760;</div>
+                <h3>Поддержка 24/7</h3>
+                <p>Сообщество «по весу» и кнопка SOS при срыве. Вы не одни.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">Путь к новой себе</h2>
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-number">1</div>
+                <h3>Онбординг</h3>
+                <p>Отвечаете на 20 вопросов — мы создаем ваш генетический код рекомендаций</p>
+            </div>
+            <div class="step-arrow">&#8594;</div>
+            <div class="step fade-in">
+                <div class="step-number">2</div>
+                <h3>План питания</h3>
+                <p>Конструктор блюд из ваших продуктов с точным КБЖУ</p>
+            </div>
+            <div class="step-arrow">&#8594;</div>
+            <div class="step fade-in">
+                <div class="step-number">3</div>
+                <h3>Тренировки</h3>
+                <p>Комплексы на любое настроение и количество энергии</p>
+            </div>
+            <div class="step-arrow">&#8594;</div>
+            <div class="step fade-in">
+                <div class="step-number">4</div>
+                <h3>Прогресс</h3>
+                <p>Фото-таймлапс и дневник самочувствия вместо стресса от весов</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about">
+    <div class="container">
+        <div class="about-card">
+            <h2>Формула Тела — это про заботу, а не про стресс</h2>
+            <p>Никаких агрессивных диет и изнурительных тренировок. Мы учитываем ваше здоровье, цикл (для женщин), условия дома и даже то, что у вас есть в холодильнике прямо сейчас.</p>
+            <p>Наша цель — не просто изменить ваше тело, а научить вас слышать и понимать его.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Присоединиться</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

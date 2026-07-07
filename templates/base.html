@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Формула Тела{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('main.index') }}" class="nav-logo">
+                <span class="logo-icon">&#9776;</span>
+                <span class="logo-text">Формула Тела</span>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('main.dashboard') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Дашборд
+                </a>
+                <a href="{{ url_for('main.weight') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M8 5l4-3 4 3"/><path d="M4 17l3-3 3 3"/><path d="M14 14l3 3 3-3"/></svg>
+                    Вес
+                </a>
+                <a href="{{ url_for('nutrition.index') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 0-4 2-4 5 0 2 1 4 4 8 3-4 4-6 4-8 0-3-2-5-4-5z"/><path d="M9 6c-1 1-2 3-2 5"/><path d="M15 6c1 1 2 3 2 5"/></svg>
+                    Питание
+                </a>
+                <a href="{{ url_for('fitness.index') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14"/><path d="M18 5v14"/><path d="M6 5c-1 0-2 1-2 2v10c0 1 1 2 2 2"/><path d="M18 5c1 0 2 1 2 2v10c0 1-1 2-2 2"/><path d="M6 12h12"/><path d="M6 9h12"/></svg>
+                    Фитнес
+                </a>
+                <a href="{{ url_for('analytics.index') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    Аналитика
+                </a>
+                <a href="{{ url_for('auth.setup') }}" class="nav-link nav-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Профиль
+                </a>
+            </div>
+            <button class="nav-toggle" id="navToggle">&#9776;</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="{{ url_for('main.legal') }}">Правовая информация</a>
+            </div>
+            <p>&copy; 2026 Формула Тела. Забота о себе — это формула счастья.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+    if (window.pywebview) {
+        document.getElementById('footer')?.remove();
+    }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

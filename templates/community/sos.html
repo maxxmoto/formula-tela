@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}SOS — Формула Тела{% endblock %}
+{% block content %}
+<div class="sos-page">
+    <div class="container">
+        <div class="sos-card">
+            <div class="sos-icon">&#9760;</div>
+            <h1>Мы здесь, чтобы помочь</h1>
+            <p class="sos-subtitle">Срывы — это нормально. Важно то, как вы продолжите.</p>
+
+            <div class="sos-tips">
+                <div class="sos-tip">
+                    <h3>&#9749; Сделайте паузу</h3>
+                    <p>Выпейте стакан воды и глубоко вдохните 10 раз. Это помогает снизить импульсивность.</p>
+                </div>
+                <div class="sos-tip">
+                    <h3>&#128244; Напишите в чат</h3>
+                    <p>Расскажите сообществу, что происходит. Поддержка рядом.</p>
+                    <a href="{{ url_for('community.index') }}" class="btn btn-outline">Перейти в чат</a>
+                </div>
+                <div class="sos-tip">
+                    <h3>&#127939; Переключитесь</h3>
+                    <p>Сделайте 10-минутную прогулку или легкую растяжку. Физическая активность снижает стресс.</p>
+                </div>
+                <div class="sos-tip">
+                    <h3>&#127858; Если съели «запрещенку»</h3>
+                    <p>Это не конец света. Просто вернитесь к своему плану со следующим приемом пищи. Один прием пищи не определяет ваш прогресс.</p>
+                </div>
+            </div>
+
+            <div class="sos-quick-chat">
+                <h2>Быстрый разговор с сообществом</h2>
+                <form id="sosForm">
+                    <textarea class="form-input" placeholder="Расскажите, что вас беспокоит..." rows="3"></textarea>
+                    <button type="submit" class="btn btn-primary btn-full">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.getElementById('sosForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const msg = this.querySelector('textarea').value.trim();
+    if(!msg) return;
+    fetch('/community/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: msg, is_sos: true})
+    }).then(r => r.json()).then(() => {
+        alert('Сообщение отправлено. Сообщество поддержит вас!');
+        this.querySelector('textarea').value = '';
+    });
+});
+</script>
+{% endblock %}

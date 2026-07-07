@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Список покупок — Формула Тела</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #2c2826;
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.8rem;
+    color: #5a8a5a;
+    margin-bottom: 8px;
+}
+.subtitle { color: #7a726e; margin-bottom: 32px; font-size: 0.95rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.category { break-inside: avoid; margin-bottom: 16px; }
+.category h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    color: #5a8a5a;
+    border-bottom: 2px solid #c1d5c1;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+}
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 0.9rem;
+}
+.checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #8fbc8f;
+    border-radius: 3px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.footer-text { margin-top: 40px; font-size: 0.8rem; color: #7a726e; text-align: center; }
+@media print {
+    @page { margin: 15mm; }
+    body { padding: 0; }
+}
+</style>
+</head>
+<body>
+<h1><img src="/static/images/icons/shopping.svg" class="h-icon" alt=""> Список покупок</h1>
+<p class="subtitle">Сгенерирован на основе ваших целей и предпочтений</p>
+<div class="grid">
+    {% for cat, cat_items in items|groupby('category') %}
+    <div class="category">
+        <h2>{{ cat }}</h2>
+        {% for item in cat_items %}
+        <div class="item">
+            <span class="checkbox"></span>
+            <span>{{ item.name }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+<p class="footer-text">Формула Тела — забота о себе</p>
+<div style="text-align:center;margin-top:20px;">
+    <button onclick="window.print()" style="padding:10px 24px;background:#8fbc8f;color:white;border:none;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:1rem;">&#128424; Распечатать / Сохранить PDF</button>
+</div>
+</body>
+</html>

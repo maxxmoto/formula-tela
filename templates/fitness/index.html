@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Фитнес — Формула Тела{% endblock %}
+{% block content %}
+<div class="fitness-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/fitness.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Домашний фитнес</span></h1>
+            <p class="page-subtitle">Тренировки, которые подстраиваются под вас</p>
+        </div>
+
+        <div class="fitness-grid">
+            <div class="fit-card generator-card fade-in">
+                <h2>Генератор тренировки дня</h2>
+                <p>Выберите параметры и получите персональный комплекс</p>
+                <form id="workoutForm">
+                    <div class="form-group">
+                        <label>Длительность</label>
+                        <div class="duration-options">
+                            <label class="duration-option">
+                                <input type="radio" name="duration" value="7">
+                                <span>7 мин</span>
+                            </label>
+                            <label class="duration-option">
+                                <input type="radio" name="duration" value="15" checked>
+                                <span>15 мин</span>
+                            </label>
+                            <label class="duration-option">
+                                <input type="radio" name="duration" value="30">
+                                <span>30 мин</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-card">
+                            <input type="checkbox" name="is_quiet" value="1">
+                            <span class="checkbox-label">&#128263; Тихая тренировка (без прыжков, не шумим)</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Категория</label>
+                        <select name="type" class="form-input">
+                            <option value="full_body">Все тело</option>
+                            <option value="upper">Верх тела</option>
+                            <option value="lower">Низ тела</option>
+                            <option value="core">Пресс и кор</option>
+                            <option value="stretch">Растяжка</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Сгенерировать тренировку</button>
+                </form>
+            </div>
+
+            <div class="fit-card workout-display fade-in" id="workoutDisplay" style="display:none">
+                <h2>Ваша тренировка</h2>
+                <div class="workout-timer" id="workoutTimer">
+                    <span class="timer-value" id="timerDisplay">00:00</span>
+                    <button class="btn btn-primary" id="startWorkout">Начать</button>
+                </div>
+                <div class="exercise-list" id="exerciseList"></div>
+                <button class="btn btn-success btn-full" id="completeWorkout" style="display:none">
+                    &#10003; Завершить тренировку
+                </button>
+            </div>
+
+            <div class="fit-card quiet-options fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/pet.svg') }}" class="h-icon" alt=""> Категории под условия</h2>
+                <div class="condition-card">
+                    <h3>Тихая тренировка</h3>
+                    <p>Без прыжков и топота — не побеспокоите соседей</p>
+                    <button class="btn btn-outline btn-sm quiet-btn" data-dur="10" data-quiet="1">10 мин</button>
+                    <button class="btn btn-outline btn-sm quiet-btn" data-dur="20" data-quiet="1">20 мин</button>
+                </div>
+                <div class="condition-card">
+                    <h3>У письменного стола</h3>
+                    <p>Упражнения, которые можно делать не вставая</p>
+                    <button class="btn btn-outline btn-sm quiet-btn" data-dur="7" data-quiet="1">7 мин</button>
+                </div>
+                <div class="condition-card">
+                    <h3>Пока варится суп</h3>
+                    <p>Интервальная тренировка на 10 минут</p>
+                    <button class="btn btn-outline btn-sm quiet-btn" data-dur="10" data-quiet="0">Начать</button>
+                </div>
+            </div>
+
+            <div class="fit-card recent-workouts fade-in">
+                <h2>Недавние тренировки</h2>
+                {% if recent %}
+                    {% for w in recent %}
+                    <div class="workout-history-item">
+                        <span class="wh-date">{{ w.date.strftime('%d.%m') }}</span>
+                        <span class="wh-type">{{ w.workout_type }}</span>
+                        <span class="wh-duration">{{ w.duration_minutes }} мин</span>
+                        <span class="wh-status {% if w.completed %}completed{% endif %}">
+                            {% if w.completed %}&#10003;{% else %}&#9711;{% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-state">Тренировок пока нет</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+let workoutId = null;
+let timerInterval = null;
+let seconds = 0;
+let currentExercise = 0;
+let exercises = [];
+let isPaused = false;
+let exSeconds = 0;
+
+document.getElementById('workoutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        duration: parseInt(document.querySelector('[name=duration]:checked')?.value || 15),
+        is_quiet: form.is_quiet.checked,
+        type: form.type.value
+    };
+
+    fetch('/fitness/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(res => {
+        exercises = res.exercises;
+        workoutId = res.workout_id;
+        displayWorkout(exercises);
+    });
+});
+
+function displayWorkout(exercises) {
+    const display = document.getElementById('workoutDisplay');
+    display.style.display = 'block';
+    const list = document.getElementById('exerciseList');
+    list.innerHTML = exercises.map((ex, i) => `
+        <div class="exercise-item" data-idx="${i}">
+            <div class="ex-num">${i+1}</div>
+            <div class="ex-info">
+                <span class="ex-name">${ex.name}</span>
+                <span class="ex-duration">${ex.duration} сек</span>
+            </div>
+            <div class="ex-progress"></div>
+        </div>
+    `).join('');
+}
+
+document.getElementById('startWorkout').addEventListener('click', function() {
+    if(isPaused) {
+        isPaused = false;
+        document.getElementById('startWorkout').textContent = 'Пауза';
+        resumeTimer();
+        return;
+    }
+    if(timerInterval) {
+        isPaused = true;
+        document.getElementById('startWorkout').textContent = 'Продолжить';
+        clearInterval(timerInterval);
+        timerInterval = null;
+        return;
+    }
+    seconds = 0;
+    currentExercise = 0;
+    exSeconds = 0;
+    isPaused = false;
+    document.getElementById('startWorkout').textContent = 'Пауза';
+    resumeTimer();
+});
+
+function resumeTimer() {
+    if(currentExercise >= exercises.length) {
+        finishWorkout();
+        return;
+    }
+    const ex = exercises[currentExercise];
+    document.querySelectorAll('.exercise-item').forEach((el, i) => {
+        el.classList.toggle('active', i === currentExercise);
+    });
+
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        seconds++;
+        const mins = Math.floor(seconds/60);
+        const secs = seconds%60;
+        document.getElementById('timerDisplay').textContent =
+            `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+        exSeconds++;
+        const total = ex.duration + ex.rest;
+        const pct = (exSeconds / total * 100);
+        const prog = document.querySelector(`.exercise-item[data-idx="${currentExercise}"] .ex-progress`);
+        if(prog) prog.style.width = Math.min(pct, 100) + '%';
+
+        if(exSeconds >= total) {
+            currentExercise++;
+            exSeconds = 0;
+            if(currentExercise >= exercises.length) {
+                finishWorkout();
+            }
+        }
+    }, 1000);
+}
+
+function finishWorkout() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    document.getElementById('startWorkout').style.display = 'none';
+    document.getElementById('completeWorkout').style.display = 'block';
+}
+
+document.getElementById('completeWorkout').addEventListener('click', function() {
+    if(workoutId) {
+        fetch(`/fitness/complete/${workoutId}`, {method: 'POST'})
+            .then(r => r.json()).then(() => {
+                alert('Тренировка завершена! Отлично поработали!');
+                location.reload();
+            });
+    }
+});
+
+document.querySelectorAll('.quiet-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelector(`[name=duration][value="${this.dataset.dur}"]`).checked = true;
+        if(this.dataset.quiet == '1') document.querySelector('[name=is_quiet]').checked = true;
+        document.getElementById('workoutForm').dispatchEvent(new Event('submit'));
+    });
+});
+</script>
+{% endblock %}

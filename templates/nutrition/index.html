@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Питание — Формула Тела{% endblock %}
+{% block content %}
+<div class="nutrition-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/nutrition.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Мой конструктор питания</span></h1>
+            <p class="page-subtitle">Гибкий подход к питанию без жестких ограничений</p>
+        </div>
+
+        <div class="nutrition-grid">
+            <div class="nutri-card macro-targets fade-in">
+                <h2>Умная тарелка дня</h2>
+                <div class="plate-visual">
+                    <div class="plate-segment protein-seg" style="--pct: {{ targets.protein_servings }}%;">
+                        <span>Белки: {{ targets.protein_servings }} порции</span>
+                    </div>
+                    <div class="plate-segment veggie-seg" style="--pct: {{ targets.veggie_servings }}%;">
+                        <span>Овощи: {{ targets.veggie_servings }} порции</span>
+                    </div>
+                    <div class="plate-segment carbs-seg" style="--pct: {{ targets.carbs_servings }}%;">
+                        <span>Углеводы: {{ targets.carbs_servings }} порции</span>
+                    </div>
+                    <div class="plate-segment fat-seg" style="--pct: {{ targets.fat_servings }}%;">
+                        <span>Жиры: {{ targets.fat_servings }} порции</span>
+                    </div>
+                </div>
+                <div class="macro-details">
+                    <div class="macro-stat"><span class="stat-label">Белки</span><span class="stat-value">{{ targets.protein }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Углеводы</span><span class="stat-value">{{ targets.carbs }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Жиры</span><span class="stat-value">{{ targets.fats }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Калории</span><span class="stat-value">{{ targets.calories }} ккал</span></div>
+                </div>
+            </div>
+
+            <div class="nutri-card consumed fade-in">
+                <h2>Сегодня съедено</h2>
+                <div class="macro-details">
+                    <div class="macro-stat"><span class="stat-label">Белки</span><span class="stat-value">{{ consumed.protein }}г / {{ targets.protein }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Углеводы</span><span class="stat-value">{{ consumed.carbs }}г / {{ targets.carbs }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Жиры</span><span class="stat-value">{{ consumed.fats }}г / {{ targets.fats }}г</span></div>
+                    <div class="macro-stat"><span class="stat-label">Калории</span><span class="stat-value">{{ consumed.calories }} / {{ targets.calories }}</span></div>
+                </div>
+                <div class="progress-bars">
+                    {% set protein_pct = (consumed.protein / targets.protein * 100) if targets.protein else 0 %}
+                    {% set carbs_pct = (consumed.carbs / targets.carbs * 100) if targets.carbs else 0 %}
+                    {% set fats_pct = (consumed.fats / targets.fats * 100) if targets.fats else 0 %}
+                    <div class="progress-bar-wrap"><div class="progress-fill protein" style="width:{% if protein_pct > 100 %}100{% else %}{{ protein_pct }}{% endif %}%"></div></div>
+                    <div class="progress-bar-wrap"><div class="progress-fill carbs" style="width:{% if carbs_pct > 100 %}100{% else %}{{ carbs_pct }}{% endif %}%"></div></div>
+                    <div class="progress-bar-wrap"><div class="progress-fill fats" style="width:{% if fats_pct > 100 %}100{% else %}{{ fats_pct }}{% endif %}%"></div></div>
+                </div>
+            </div>
+
+            <div class="nutri-card meal-list fade-in">
+                <h2>Приемы пищи сегодня</h2>
+                {% if meals %}
+                    {% for meal in meals %}
+                    <div class="meal-entry">
+                        <span class="meal-type">{{ meal.meal_type }}</span>
+                        <span class="meal-name">{{ meal.food_name }}</span>
+                        <span class="meal-cal">{{ meal.calories }} ккал</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-state">Сегодня еще ничего не записано</p>
+                {% endif %}
+                <button class="btn btn-primary btn-sm" onclick="document.getElementById('addMealModal').style.display='block'">+ Добавить прием пищи</button>
+            </div>
+
+            <div class="nutri-card fridge-tool fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/home.svg') }}" class="h-icon" alt=""> Сценарий «Холодильник»</h2>
+                <p>Расскажите, что у вас есть дома, и мы соберем блюдо</p>
+                <a href="{{ url_for('nutrition.fridge') }}" class="btn btn-primary">Что приготовить?</a>
+            </div>
+
+            <div class="nutri-card grocery-tool fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/shopping.svg') }}" class="h-icon" alt=""> Умный список покупок</h2>
+                <p>Список продуктов на неделю на основе ваших предпочтений</p>
+                <a href="{{ url_for('nutrition.grocery_list') }}" class="btn btn-primary">Смотреть список</a>
+            </div>
+
+            <div class="nutri-card cheat-tool fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/star.svg') }}" class="h-icon" alt=""> Читмил-баланс</h2>
+                <p>Как встроить любимое блюдо в рацион без чувства вины</p>
+                <a href="{{ url_for('nutrition.cheat_meal') }}" class="btn btn-primary">Узнать</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addMealModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+        <h2>Добавить прием пищи</h2>
+        <form id="addMealForm">
+            <div class="form-group">
+                <label>Тип приема</label>
+                <select name="meal_type" class="form-input" required>
+                    <option value="breakfast">Завтрак</option>
+                    <option value="lunch">Обед</option>
+                    <option value="dinner">Ужин</option>
+                    <option value="snack">Перекус</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Название блюда</label>
+                <input type="text" name="food_name" class="form-input" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Белки (г)</label>
+                    <input type="number" name="protein" class="form-input" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Углеводы (г)</label>
+                    <input type="number" name="carbs" class="form-input" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Жиры (г)</label>
+                    <input type="number" name="fats" class="form-input" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Калории</label>
+                    <input type="number" name="calories" class="form-input">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Сохранить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.getElementById('addMealForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        meal_type: form.meal_type.value,
+        food_name: form.food_name.value,
+        protein: parseFloat(form.protein.value) || 0,
+        carbs: parseFloat(form.carbs.value) || 0,
+        fats: parseFloat(form.fats.value) || 0,
+        calories: parseFloat(form.calories.value) || 0,
+        portion_size: ''
+    };
+    fetch('/nutrition/api/add-meal', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(() => location.reload());
+});
+</script>
+{% endblock %}

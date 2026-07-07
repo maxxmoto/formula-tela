@@ -1,0 +1,10 @@
+&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 64 64&quot;&gt;
+  &lt;defs&gt;
+    &lt;linearGradient id=&quot;bg&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;100%&quot;&gt;
+      &lt;stop offset=&quot;0%&quot; style=&quot;stop-color:#8fbc8f;stop-opacity:1&quot; /&gt;
+      &lt;stop offset=&quot;100%&quot; style=&quot;stop-color:#5a8a5a;stop-opacity:1&quot; /&gt;
+    &lt;/linearGradient&gt;
+  &lt;/defs&gt;
+  &lt;rect width=&quot;64&quot; height=&quot;64&quot; rx=&quot;14&quot; fill=&quot;url(#bg)&quot;/&gt;
+  &lt;text x=&quot;32&quot; y=&quot;40&quot; font-family=&quot;Arial&quot; font-size=&quot;28&quot; font-weight=&quot;bold&quot; text-anchor=&quot;middle&quot; fill=&quot;white&quot;&gt;&amp;#9825;&lt;/text&gt;
+&lt;/svg&gt;

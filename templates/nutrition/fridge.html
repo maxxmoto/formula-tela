@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Холодильник — Формула Тела{% endblock %}
+{% block content %}
+<div class="fridge-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><img src="{{ url_for('static', filename='images/icons/home.svg') }}" class="h-icon" alt=""> <span class="h1-gradient">Сценарий «Холодильник»</span></h1>
+            <p class="page-subtitle">Введите продукты, которые есть дома, и мы предложим варианты блюд</p>
+        </div>
+
+        <div class="fridge-layout">
+            <div class="fridge-input-card fade-in">
+                <h2>Что у вас есть?</h2>
+                <div class="tag-input-area">
+                    <div class="tag-container" id="ingredientTags"></div>
+                    <div class="tag-input-row">
+                        <input type="text" id="ingredientInput" class="form-input" placeholder="Например: яйца, помидоры..." list="commonIngredients">
+                        <datalist id="commonIngredients">
+                            <option value="яйца"><option value="курица"><option value="гречка"><option value="рис">
+                            <option value="помидоры"><option value="огурцы"><option value="лук"><option value="морковь">
+                            <option value="картофель"><option value="капуста"><option value="брокколи"><option value="тофу">
+                            <option value="рыба"><option value="творог"><option value="йогурт"><option value="авокадо">
+                        </datalist>
+                        <button class="btn btn-primary" id="addIngredientBtn">+</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-full" id="generateMealsBtn">Подобрать блюда</button>
+            </div>
+
+            <div class="fridge-results fade-in" id="mealResults">
+                <div class="empty-state">
+                    <p>Добавьте продукты и нажмите «Подобрать блюда»</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+const ingredients = [];
+const tagContainer = document.getElementById('ingredientTags');
+const input = document.getElementById('ingredientInput');
+
+document.getElementById('addIngredientBtn').addEventListener('click', addIngredient);
+input.addEventListener('keypress', e => { if(e.key==='Enter') addIngredient(); });
+
+function addIngredient() {
+    const val = input.value.trim().toLowerCase();
+    if(val && !ingredients.includes(val)) {
+        ingredients.push(val);
+        renderTags();
+    }
+    input.value = '';
+}
+
+function renderTags() {
+    tagContainer.innerHTML = ingredients.map(i =>
+        `<span class="tag">${i} <span class="tag-remove" data-ing="${i}">&times;</span></span>`
+    ).join('');
+    document.querySelectorAll('.tag-remove').forEach(el => {
+        el.addEventListener('click', function() {
+            const idx = ingredients.indexOf(this.dataset.ing);
+            if(idx > -1) ingredients.splice(idx, 1);
+            renderTags();
+        });
+    });
+}
+
+document.getElementById('generateMealsBtn').addEventListener('click', function() {
+    if(ingredients.length === 0) return;
+    fetch('/nutrition/api/meal-from-fridge', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ingredients})
+    }).then(r => r.json()).then(data => {
+        const results = document.getElementById('mealResults');
+        results.innerHTML = data.meals.map(m => `
+            <div class="meal-option">
+                <img src="/static/images/${m.image || 'food/greek_salad.svg'}" class="meal-img" alt="${m.name}">
+                <div class="meal-option-body">
+                    <h3>${m.name}</h3>
+                    <p><strong>${m.calories} ккал</strong> | Б ${m.protein}г | Ж ${m.fats}г | У ${m.carbs}г</p>
+                    <p class="meal-ingredients">${m.ingredients.join(', ')}</p>
+                    <p class="meal-time">&#9201; ${m.time} | ${m.source}</p>
+                </div>
+            </div>
+        `).join('');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Дашборд — Формула Тела{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="greeting">
+                <h1><span class="h1-gradient">{% if current_user.username and current_user.username != 'me' %}Привет, {{ current_user.username }}!{% else %}Привет!{% endif %}</span></h1>
+                <p class="motivational-msg">{{ msg }}</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dash-card today-panel fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/star.svg') }}" class="h-icon" alt=""> Сегодня</h2>
+                <div class="cycle-info" id="cycleInfo"></div>
+                <div class="quick-log">
+                    <h3>Быстрый лог</h3>
+                    <form action="{{ url_for('main.save_daily_log') }}" method="POST" class="quick-log-form">
+                        <div class="log-row">
+                            <div class="log-item">
+                                <label>💧 Вода (стаканы)</label>
+                                <input type="number" name="water" value="{{ daily_log.water_glasses or 0 }}" min="0" max="20">
+                            </div>
+                            <div class="log-item">
+                                <label>🌙 Сон (часы)</label>
+                                <input type="number" name="sleep" value="{{ daily_log.sleep_hours or '' }}" step="0.5" min="0" max="24">
+                            </div>
+                            <div class="log-item">
+                                <label>🏃 Активность (мин)</label>
+                                <input type="number" name="activity" value="{{ daily_log.activity_minutes or 0 }}" min="0" max="480">
+                            </div>
+                        </div>
+                        <div class="log-row">
+                            <div class="log-item">
+                                <label>😊 Настроение</label>
+                                <select name="mood" class="form-input">
+                                    <option value="">--</option>
+                                    <option value="1" {% if daily_log.mood == 1 %}selected{% endif %}>&#128557;</option>
+                                    <option value="2" {% if daily_log.mood == 2 %}selected{% endif %}>&#128533;</option>
+                                    <option value="3" {% if daily_log.mood == 3 %}selected{% endif %}>&#128528;</option>
+                                    <option value="4" {% if daily_log.mood == 4 %}selected{% endif %}>&#128522;</option>
+                                    <option value="5" {% if daily_log.mood == 5 %}selected{% endif %}>&#128513;</option>
+                                </select>
+                            </div>
+                            <div class="log-item">
+                                <label>⚡ Энергия</label>
+                                <select name="energy" class="form-input">
+                                    <option value="">--</option>
+                                    <option value="1" {% if daily_log.energy == 1 %}selected{% endif %}>Очень низкая</option>
+                                    <option value="2" {% if daily_log.energy == 2 %}selected{% endif %}>Низкая</option>
+                                    <option value="3" {% if daily_log.energy == 3 %}selected{% endif %}>Средняя</option>
+                                    <option value="4" {% if daily_log.energy == 4 %}selected{% endif %}>Высокая</option>
+                                    <option value="5" {% if daily_log.energy == 5 %}selected{% endif %}>Очень высокая</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="dash-card nutrition-preview fade-in">
+                <a href="{{ url_for('nutrition.index') }}" class="card-link">
+                    <h2><img src="{{ url_for('static', filename='images/icons/nutrition.svg') }}" class="h-icon" alt=""> Питание сегодня</h2>
+                    {% set protein_pct = (consumed.protein / targets.protein * 100) if targets.protein else 0 %}
+                    {% set carbs_pct = (consumed.carbs / targets.carbs * 100) if targets.carbs else 0 %}
+                    {% set fats_pct = (consumed.fats / targets.fats * 100) if targets.fats else 0 %}
+                    <div style="margin-bottom:12px;">
+                        <div class="progress-bar-wrap"><div class="progress-fill protein" style="width:{% if protein_pct > 100 %}100{% else %}{{ protein_pct }}{% endif %}%"></div></div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:6px;">
+                            <span>Белки</span><span>{{ consumed.protein }} / {{ targets.protein }} г</span>
+                        </div>
+                        <div class="progress-bar-wrap"><div class="progress-fill carbs" style="width:{% if carbs_pct > 100 %}100{% else %}{{ carbs_pct }}{% endif %}%"></div></div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:6px;">
+                            <span>Углеводы</span><span>{{ consumed.carbs }} / {{ targets.carbs }} г</span>
+                        </div>
+                        <div class="progress-bar-wrap"><div class="progress-fill fats" style="width:{% if fats_pct > 100 %}100{% else %}{{ fats_pct }}{% endif %}%"></div></div>
+                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-bottom:6px;">
+                            <span>Жиры</span><span>{{ consumed.fats }} / {{ targets.fats }} г</span>
+                        </div>
+                    </div>
+                    <span class="card-action">Перейти в конструктор питания &rarr;</span>
+                </a>
+            </div>
+
+            <div class="dash-card workout-preview fade-in">
+                <a href="{{ url_for('fitness.index') }}" class="card-link">
+                    <h2><img src="{{ url_for('static', filename='images/icons/fitness.svg') }}" class="h-icon" alt=""> Тренировка</h2>
+                    {% set today_workout = todays_workout %}
+                    {% if today_workout %}
+                        <p>Сегодня: {{ today_workout.workout_type }} ({{ today_workout.duration_minutes }} мин)</p>
+                    {% else %}
+                        <p>Тренировка еще не запланирована</p>
+                        <span class="card-action">Сгенерировать тренировку &rarr;</span>
+                    {% endif %}
+                </a>
+            </div>
+
+            <div class="dash-card streak-panel fade-in">
+                <h2><img src="{{ url_for('static', filename='images/icons/pet.svg') }}" class="h-icon" alt=""> Серия {{ streak }} дней</h2>
+                <div class="week-grid">
+                    {% for i in range(7) %}
+                    <div class="day-marker {% if i < streak %}active{% endif %}"></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="dash-card community-preview fade-in">
+                <a href="{{ url_for('community.index') }}" class="card-link">
+                    <h2><img src="{{ url_for('static', filename='images/icons/community.svg') }}" class="h-icon" alt=""> Сообщество</h2>
+                    <p>Поддержка и мотивация от людей на вашем этапе</p>
+                </a>
+            </div>
+
+            <div class="dash-card analytics-preview fade-in">
+                <a href="{{ url_for('analytics.index') }}" class="card-link">
+                    <h2><img src="{{ url_for('static', filename='images/icons/analytics.svg') }}" class="h-icon" alt=""> Аналитика</h2>
+                    <p>Трекинг привычек, дневник самочувствия и прогресс</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/cycle-info')
+        .then(r => r.json())
+        .then(data => {
+            if (data.has_cycle) {
+                document.getElementById('cycleInfo').innerHTML =
+                    `<div class="cycle-badge">&#9793; День цикла: ${data.cycle_day}. ${data.message}</div>`;
+            }
+        });
+});
+</script>
+{% endblock %}
